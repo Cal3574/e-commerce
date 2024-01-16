@@ -1,0 +1,41 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  name     String?
+  orders   Order[]
+}
+
+model Product {
+  id       Int      @id @default(autoincrement())
+  name     String
+  price    Float
+  quantity Int
+  orders   Order[]  @relation("OrderToProduct")
+}
+
+model Order {
+  id        Int        @id @default(autoincrement())
+  userId    Int
+  total     Float
+  status    orderStatus @default(PENDING)
+  createdAt DateTime   @default(now())
+  user      User       @relation(fields: [userId], references: [id])
+  products  Product[]  @relation("OrderToProduct")  // Relationship to fetch product details
+}
+
+enum orderStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
