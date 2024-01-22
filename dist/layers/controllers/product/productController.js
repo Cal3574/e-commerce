@@ -52,10 +52,11 @@ router.get("/all-products", (req, res, next) => __awaiter(void 0, void 0, void 0
     }
 }));
 // Route to delete a product by ID
-router.delete("/delete-product/:id", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+router.delete("/delete-product/:product_id", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const id = Number(req.params.id);
-        const deleted = yield (0, productService_1.deleteProductService)(id);
+        const id = Number(req.params.product_id);
+        const validatedData = addProductSchema_1.deleteProductSchema.parse({ product_id: id });
+        const deleted = yield (0, productService_1.deleteProductService)(validatedData.product_id);
         baseController_1.BaseController.apiResultToStatusCode(res, deleted);
         res.json(deleted);
     }
@@ -63,7 +64,7 @@ router.delete("/delete-product/:id", (req, res, next) => __awaiter(void 0, void 
         next(e);
     }
 }));
-router.put("/update-product/:id", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+router.put("/update-product/:product_id", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = Number(req.params.id);
         const productData = req.body;

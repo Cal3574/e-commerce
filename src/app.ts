@@ -1,5 +1,6 @@
 import express, { Express } from "express";
 import { errorHandler } from "./errors/errorHandler";
+import { limiter } from "./lib/rateLimit";
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
@@ -17,6 +18,9 @@ app.use(
     credentials: true,
   })
 );
+
+//rate limiter
+app.use("/api/", limiter);
 
 // for parsing application/json
 app.use(express.json());

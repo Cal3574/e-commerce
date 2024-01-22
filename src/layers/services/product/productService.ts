@@ -5,7 +5,7 @@ import {
   getProductById,
   updateProduct,
 } from "../../data-access/product/productRepository";
-import { ApiResult, ApiResultWithData } from "../../../return/ApiReturn";
+import { ApiResult, ApiResultWithData } from "../../../util/ApiReturn";
 import { ProductDataType } from "../../../types/product";
 
 // Service function to add a product

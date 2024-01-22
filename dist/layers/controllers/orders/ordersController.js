@@ -15,13 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const ordersService_1 = require("../../services/orders/ordersService");
 const baseController_1 = require("../baseController");
+const addOrderSchema_1 = require("../../../schemas/zodSchemas/addOrderSchema");
 const router = express_1.default.Router();
 router.post("/new-order", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const orderData = req.body;
-        //zod schema validation
-        // Call the service function to add the order
-        const newOrder = yield (0, ordersService_1.createOrderService)(orderData);
+        const validatedData = addOrderSchema_1.addOrderSchema.parse(orderData);
+        const newOrder = yield (0, ordersService_1.createOrderService)(validatedData);
         baseController_1.BaseController.apiResultToStatusCode(res, newOrder);
         res.json(newOrder);
     }
@@ -34,7 +34,6 @@ router.get("/all-orders/:userId", (req, res, next) => __awaiter(void 0, void 0, 
         const userId = Number(req.params.userId);
         // Call the service function to get all orders
         const orders = yield (0, ordersService_1.getAllUserOrdersService)(userId);
-        console.log(orders);
         baseController_1.BaseController.apiResultToStatusCode(res, orders);
         res.json(orders);
     }

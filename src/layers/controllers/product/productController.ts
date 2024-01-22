@@ -2,14 +2,16 @@ import express, { NextFunction, Request, Response } from "express";
 import { BaseController } from "../baseController";
 import { ProductDataType } from "../../../types/product";
 import { validateTokenMiddleware } from "../../../validation/tokenValidationMiddleware";
-import { addProductSchema } from "../../../schemas/zodSchemas/addProductSchema";
+import {
+  addProductSchema,
+  deleteProductSchema,
+} from "../../../schemas/zodSchemas/addProductSchema";
 import {
   addProductService,
   deleteProductService,
   getAllProductsService,
   updateProductService,
 } from "../../services/product/productService";
-import { AuthenticatedRequest } from "../../../types/requests";
 const router = express.Router();
 
 // Route to add a new product
@@ -63,11 +65,13 @@ router.get(
 
 // Route to delete a product by ID
 router.delete(
-  "/delete-product/:id",
+  "/delete-product/:product_id",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const id = Number(req.params.id);
-      const deleted = await deleteProductService(id);
+      const id = Number(req.params.product_id);
+
+      const validatedData = deleteProductSchema.parse({ product_id: id });
+      const deleted = await deleteProductService(validatedData.product_id);
       BaseController.apiResultToStatusCode(res, deleted);
       res.json(deleted);
     } catch (e) {
@@ -77,11 +81,12 @@ router.delete(
 );
 
 router.put(
-  "/update-product/:id",
+  "/update-product/:product_id",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = Number(req.params.id);
       const productData: ProductDataType = req.body;
+
       const updated = await updateProductService(id, productData);
       BaseController.apiResultToStatusCode(res, updated);
       res.json(updated);

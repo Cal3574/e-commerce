@@ -9,3 +9,7 @@ export const addProductSchema: ZodSchema<{
   price: z.number().positive(),
   quantity: z.number().positive(),
 });
+
+export const deleteProductSchema: ZodSchema<{ product_id: number }> = z.object({
+  product_id: z.number().positive(),
+});

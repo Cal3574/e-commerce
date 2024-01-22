@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateProductService = exports.deleteProductService = exports.getProductByIdService = exports.getAllProductsService = exports.addProductService = void 0;
 const productRepository_1 = require("../../data-access/product/productRepository");
-const ApiReturn_1 = require("../../../return/ApiReturn");
+const ApiReturn_1 = require("../../../util/ApiReturn");
 // Service function to add a product
 function addProductService(productData) {
     return __awaiter(this, void 0, void 0, function* () {

@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const errorHandler_1 = require("./errors/errorHandler");
+const rateLimit_1 = require("./lib/rateLimit");
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
@@ -19,6 +20,8 @@ app.use(cors({
     optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
     credentials: true,
 }));
+//rate limiter
+app.use("/api/", rateLimit_1.limiter);
 // for parsing application/json
 app.use(express_1.default.json());
 app.use(cookieParser());

@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getUserByEmailService = exports.addUserService = void 0;
-const ApiReturn_1 = require("../../../return/ApiReturn");
+const ApiReturn_1 = require("../../../util/ApiReturn");
 const userRepository_1 = require("../../data-access/user/userRepository");
 function addUserService(userData) {
     return __awaiter(this, void 0, void 0, function* () {

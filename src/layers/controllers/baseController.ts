@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { ApiResult } from "../../return/ApiReturn";
+import { ApiResult } from "../../util/ApiReturn";
 
 export class BaseController {
   public static apiResultToStatusCode(res: Response, apiResult: ApiResult) {

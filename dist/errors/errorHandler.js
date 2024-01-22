@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.errorHandler = void 0;
-const ApiReturn_1 = require("../return/ApiReturn");
+const ApiReturn_1 = require("../util/ApiReturn");
 const zod_1 = require("zod");
 const baseController_1 = require("../layers/controllers/baseController");
 const errorHandler = (e, req, res, next) => {

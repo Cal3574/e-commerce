@@ -1,4 +1,4 @@
-import { ApiResultWithData } from "../../../return/ApiReturn";
+import { ApiResultWithData } from "../../../util/ApiReturn";
 import { addUser, getUserByEmail } from "../../data-access/user/userRepository";
 
 export async function addUserService(userData: any) {

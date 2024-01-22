@@ -7,6 +7,12 @@ import {
   updateCartItemService,
 } from "../../services/cart/cartService";
 import { BaseController } from "../baseController";
+import {
+  addCartSchema,
+  addProductToCartSchema,
+  deleteCartItemSchema,
+  updateCartItemSchema,
+} from "../../../schemas/zodSchemas/addCartSchema";
 
 const router = express.Router();
 
@@ -16,8 +22,9 @@ router.post(
     try {
       const userId = Number(req.body.userId);
 
-      // Call the service function to add the cart
-      const newCart = await createCartService(userId);
+      const validatedData = addCartSchema.parse(userId);
+
+      const newCart = await createCartService(validatedData.userId);
 
       BaseController.apiResultToStatusCode(res, newCart);
       res.json(newCart);
@@ -52,11 +59,16 @@ router.post(
       const productId = Number(req.body.productId);
       const quantity = Number(req.body.quantity);
 
-      // Call the service function to add the cart
-      const cartItem = await addProductToCartService(
+      const validatedData = addProductToCartSchema.parse({
         userId,
         productId,
-        quantity
+        quantity,
+      });
+
+      const cartItem = await addProductToCartService(
+        validatedData.userId,
+        validatedData.productId,
+        validatedData.quantity
       );
 
       BaseController.apiResultToStatusCode(res, cartItem);
@@ -73,8 +85,11 @@ router.delete(
     try {
       const cartItemId = Number(req.params.cartItemId);
 
-      // Call the service function to add the cart
-      const cartItem = await deleteCartItemService(cartItemId);
+      const validatedData = deleteCartItemSchema.parse({
+        cartItemId,
+      });
+
+      const cartItem = await deleteCartItemService(validatedData.cartItemId);
 
       BaseController.apiResultToStatusCode(res, cartItem);
       res.json(cartItem);
@@ -91,8 +106,16 @@ router.put(
       const cartItemId = Number(req.params.cartItemId);
       const quantity = Number(req.body.quantity);
 
+      const validatedData = updateCartItemSchema.parse({
+        cartItemId,
+        quantity,
+      });
+
       // Call the service function to add the cart
-      const cartItem = await updateCartItemService(cartItemId, quantity);
+      const cartItem = await updateCartItemService(
+        validatedData.cartItemId,
+        validatedData.quantity
+      );
 
       BaseController.apiResultToStatusCode(res, cartItem);
       res.json(cartItem);

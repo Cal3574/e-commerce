@@ -1,5 +1,5 @@
 import { Response, NextFunction } from "express";
-import { ApiResult, ApiResultWithData } from "../return/ApiReturn";
+import { ApiResult, ApiResultWithData } from "../util/ApiReturn";
 import { z } from "zod";
 import { BaseController } from "../layers/controllers/baseController";
 export const errorHandler = (

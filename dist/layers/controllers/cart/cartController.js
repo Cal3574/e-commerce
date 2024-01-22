@@ -15,12 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cartService_1 = require("../../services/cart/cartService");
 const baseController_1 = require("../baseController");
+const addCartSchema_1 = require("../../../schemas/zodSchemas/addCartSchema");
 const router = express_1.default.Router();
 router.post("/new-cart", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = Number(req.body.userId);
-        // Call the service function to add the cart
-        const newCart = yield (0, cartService_1.createCartService)(userId);
+        const validatedData = addCartSchema_1.addCartSchema.parse(userId);
+        const newCart = yield (0, cartService_1.createCartService)(validatedData.userId);
         baseController_1.BaseController.apiResultToStatusCode(res, newCart);
         res.json(newCart);
     }
@@ -45,8 +46,12 @@ router.post("/add-product-to-cart", (req, res, next) => __awaiter(void 0, void 0
         const userId = Number(req.body.userId);
         const productId = Number(req.body.productId);
         const quantity = Number(req.body.quantity);
-        // Call the service function to add the cart
-        const cartItem = yield (0, cartService_1.addProductToCartService)(userId, productId, quantity);
+        const validatedData = addCartSchema_1.addProductToCartSchema.parse({
+            userId,
+            productId,
+            quantity,
+        });
+        const cartItem = yield (0, cartService_1.addProductToCartService)(validatedData.userId, validatedData.productId, validatedData.quantity);
         baseController_1.BaseController.apiResultToStatusCode(res, cartItem);
         res.json(cartItem);
     }
@@ -57,8 +62,10 @@ router.post("/add-product-to-cart", (req, res, next) => __awaiter(void 0, void 0
 router.delete("/delete-cart-item/:cartItemId", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const cartItemId = Number(req.params.cartItemId);
-        // Call the service function to add the cart
-        const cartItem = yield (0, cartService_1.deleteCartItemService)(cartItemId);
+        const validatedData = addCartSchema_1.deleteCartItemSchema.parse({
+            cartItemId,
+        });
+        const cartItem = yield (0, cartService_1.deleteCartItemService)(validatedData.cartItemId);
         baseController_1.BaseController.apiResultToStatusCode(res, cartItem);
         res.json(cartItem);
     }
@@ -70,8 +77,12 @@ router.put("/update-cart-item/:cartItemId", (req, res, next) => __awaiter(void 0
     try {
         const cartItemId = Number(req.params.cartItemId);
         const quantity = Number(req.body.quantity);
+        const validatedData = addCartSchema_1.updateCartItemSchema.parse({
+            cartItemId,
+            quantity,
+        });
         // Call the service function to add the cart
-        const cartItem = yield (0, cartService_1.updateCartItemService)(cartItemId, quantity);
+        const cartItem = yield (0, cartService_1.updateCartItemService)(validatedData.cartItemId, validatedData.quantity);
         baseController_1.BaseController.apiResultToStatusCode(res, cartItem);
         res.json(cartItem);
     }

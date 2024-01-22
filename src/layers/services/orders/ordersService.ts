@@ -1,5 +1,5 @@
 import prisma from "../../../config/prisma"; // Ensure you have Prisma client imported
-import { ApiResult, ApiResultWithData } from "../../../return/ApiReturn";
+import { ApiResult, ApiResultWithData } from "../../../util/ApiReturn";
 import { OrderDataType, OrderProductDataType } from "../../../types/orders";
 import {
   getAllUserOrdersRepository,

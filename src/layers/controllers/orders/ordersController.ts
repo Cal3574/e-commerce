@@ -5,6 +5,7 @@ import {
   getSpecificUserOrderService,
 } from "../../services/orders/ordersService";
 import { BaseController } from "../baseController";
+import { addOrderSchema } from "../../../schemas/zodSchemas/addOrderSchema";
 
 const router = express.Router();
 
@@ -14,9 +15,9 @@ router.post(
     try {
       const orderData = req.body;
 
-      //zod schema validation
-      // Call the service function to add the order
-      const newOrder = await createOrderService(orderData);
+      const validatedData = addOrderSchema.parse(orderData);
+
+      const newOrder = await createOrderService(validatedData);
 
       BaseController.apiResultToStatusCode(res, newOrder);
       res.json(newOrder);
@@ -35,7 +36,6 @@ router.get(
 
       // Call the service function to get all orders
       const orders = await getAllUserOrdersService(userId);
-      console.log(orders);
 
       BaseController.apiResultToStatusCode(res, orders);
       res.json(orders);
