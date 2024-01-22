@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createOrderRepository = void 0;
+exports.getSpecificUserOrderRepository = exports.getAllUserOrdersRepository = exports.createOrderRepository = void 0;
 const prisma_1 = __importDefault(require("../../../config/prisma"));
 function createOrderRepository(order) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -27,3 +27,42 @@ function createOrderRepository(order) {
     });
 }
 exports.createOrderRepository = createOrderRepository;
+function getAllUserOrdersRepository(userId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log("userid" + userId);
+        const orders = yield prisma_1.default.order.findMany({
+            where: {
+                userId: userId,
+            },
+            include: {
+                orderItems: {
+                    include: {
+                        product: true,
+                    },
+                },
+            },
+        });
+        console.log(orders);
+        return orders;
+    });
+}
+exports.getAllUserOrdersRepository = getAllUserOrdersRepository;
+function getSpecificUserOrderRepository(userId, orderId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const order = yield prisma_1.default.order.findUnique({
+            where: {
+                id: orderId,
+                userId: userId,
+            },
+            include: {
+                orderItems: {
+                    include: {
+                        product: true,
+                    },
+                },
+            },
+        });
+        return order;
+    });
+}
+exports.getSpecificUserOrderRepository = getSpecificUserOrderRepository;

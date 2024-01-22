@@ -37,7 +37,10 @@ export async function deleteProduct(id: number) {
 }
 
 // Function to update a product by ID
-export async function updateProduct(id: number, productData: ProductDataType) {
+export async function updateProduct(
+  id: number,
+  productData: Partial<ProductDataType>
+) {
   const updated = await prisma.product.update({
     where: {
       id: id,

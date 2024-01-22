@@ -14,14 +14,15 @@ model User {
   email    String   @unique
   name     String?
   orders   Order[]
-}
+  cart     ShoppingCart?  
+  }
 
 model Product {
   id       Int      @id @default(autoincrement())
   name     String
   price    Float
   quantity Int
-  orders   Order[]  @relation("OrderToProduct")
+  orderItems OrderItem[] // Relationship to fetch order items
 }
 
 model Order {
@@ -31,8 +32,37 @@ model Order {
   status    orderStatus @default(PENDING)
   createdAt DateTime   @default(now())
   user      User       @relation(fields: [userId], references: [id])
-  products  Product[]  @relation("OrderToProduct")  // Relationship to fetch product details
+  orderItems OrderItem[]  // Relationship to fetch order items
 }
+
+
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+  orderId   Int
+  productId Int
+  quantity  Int      // Quantity of the product in the order
+  order     Order    @relation(fields: [orderId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+}
+
+model ShoppingCart {
+  cartId    Int      @id @default(autoincrement())
+  userId    Int      @unique
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+  cartItems CartItems[]
+  user User @relation(fields: [userId], references: [id])
+  
+}
+
+model CartItems {
+  cartItemId Int      @id @default(autoincrement())
+  cartId     Int
+  productId  Int
+  quantity   Int      // Quantity of the product in the cart
+  cart       ShoppingCart @relation(fields: [cartId], references: [cartId])
+}
+
 
 enum orderStatus {
   PENDING

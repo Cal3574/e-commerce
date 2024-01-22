@@ -20,12 +20,12 @@ const productService_1 = require("../../services/product/productService");
 const router = express_1.default.Router();
 // Route to add a new product
 router.post("/new-product", tokenValidationMiddleware_1.validateTokenMiddleware, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
         // Extract product data from the request body
         const productData = req.body;
-        //@ts-ignore
-        const userId = { userId: Number(req.user.id) };
-        console.log("userId", userId);
+        // Extract user ID from the request
+        const userId = { userId: Number((_a = req === null || req === void 0 ? void 0 : req.user) === null || _a === void 0 ? void 0 : _a.id) };
         //convert price & quantity to number
         productData.price = Number(productData.price);
         productData.quantity = Number(productData.quantity);

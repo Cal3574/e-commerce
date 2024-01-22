@@ -1,74 +1,89 @@
+import prisma from "../../../config/prisma"; // Ensure you have Prisma client imported
 import { ApiResult, ApiResultWithData } from "../../../return/ApiReturn";
-import { createOrderRepository } from "../../data-access/orders/ordersRepository";
-import { getProductById } from "../../data-access/product/productRepository";
-import { updateProductService } from "../product/productService";
-export async function createOrderService(orderData: any) {
-  //destructure the product ids
+import { OrderDataType, OrderProductDataType } from "../../../types/orders";
+import {
+  getAllUserOrdersRepository,
+  getSpecificUserOrderRepository,
+} from "../../data-access/orders/ordersRepository";
 
-  console.log(orderData, "orderData");
+export async function createOrderService(orderData: OrderDataType) {
+  return await prisma
+    .$transaction(async (trans) => {
+      // Initialize the total order amount
+      let total = 0;
+      const orderItems = [];
 
-  const productIds = orderData.products.map((product: any) => {
-    const order = {
-      productId: Number(product.productId),
-      quantity: Number(product.quantity),
-    };
-    return order;
-  });
+      // Check if the products exist and are in stock
+      for (const product of orderData.products) {
+        const productId = Number(product.productId);
+        const quantity = Number(product.quantity);
 
-  console.log(productIds, "productIds");
-  //check if the products exist and are in stock
+        // Fetch current stock level for the product using the transaction
+        const currentProduct = await trans.product.findUnique({
+          where: { id: productId },
+        });
 
-  let availableProducts: any = [];
+        if (!currentProduct || currentProduct.quantity < quantity) {
+          throw new Error(
+            `Product ID ${productId} is not available in the requested quantity`
+          );
+        }
 
-  for (let i = 0; i < productIds.length; i++) {
-    const product = await getProductById(productIds[i].productId);
-    if (product && product.quantity > 0) {
-      availableProducts.push({
-        ...product,
+        // Calculate the actual quantity (limited by available stock)
+        const actualQuantity = Math.min(quantity, currentProduct.quantity);
+
+        // Add to total price
+        total += actualQuantity * currentProduct.price;
+
+        // Prepare order item and update available product quantity
+        orderItems.push({ productId: productId, quantity: actualQuantity });
+
+        // Update the product in the database with the new quantity
+        await trans.product.update({
+          where: { id: productId },
+          data: { quantity: currentProduct.quantity - actualQuantity },
+        });
+      }
+
+      // Create the order with order items using the transaction
+      const newOrder = await trans.order.create({
+        data: {
+          userId: orderData.userId,
+          total: total,
+          status: "PENDING",
+          orderItems: { create: orderItems },
+        },
       });
-    }
-  }
 
-  if (availableProducts.length === 0) {
-    return ApiResult.FailedResult(["The selected products are not available"]);
-  }
-
-  //check if we have enough stock for the user to buy the requested quantity
-
-  //calculate the total
-  const total = availableProducts.reduce((acc: any, product: any) => {
-    return acc + product.price * product.quantity;
-  }, 0);
-
-  const formattedOrder = {
-    userId: 27,
-    total: total,
-    status: "PENDING",
-    products: {
-      connect: availableProducts.map((product: any) => {
-        return { id: product.id };
-      }),
-    },
-  };
-
-  //create the order
-  const newOrder = await createOrderRepository(formattedOrder);
-
-  //update the product quantities
-  const productUpdates = availableProducts.map((product: any) => {
-    return {
-      id: product.id,
-      quantity:
-        product.quantity -
-        productIds.find((p: any) => p.productId === product.id).quantity,
-    };
-  });
-
-  await Promise.allSettled(
-    productUpdates.map((product: any) => {
-      return updateProductService(product.id, product);
+      return newOrder;
     })
-  );
+    .then((result) => {
+      return ApiResultWithData.SuccessfulResult(result);
+    })
+    .catch((error) => {
+      // Handle errors such as insufficient product quantity
+      return ApiResult.FailedResult([error.message]);
+    });
+}
 
-  return ApiResultWithData.SuccessfulResult(newOrder);
+export async function getAllUserOrdersService(userId: number) {
+  const userOrders = await getAllUserOrdersRepository(userId);
+
+  if (userOrders.length === 0) {
+    return ApiResult.FailedResult(["No orders found for the user"]);
+  }
+  return ApiResultWithData.SuccessfulResult(userOrders);
+}
+
+export async function getSpecificUserOrderService(
+  userId: number,
+  orderId: number
+) {
+  const userOrder = await getSpecificUserOrderRepository(userId, orderId);
+
+  if (!userOrder) {
+    return ApiResult.FailedResult(["No order found for the user"]);
+  }
+
+  return ApiResultWithData.SuccessfulResult(userOrder);
 }

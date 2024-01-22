@@ -14,3 +14,43 @@ export async function createOrderRepository(order: any) {
 
   return newOrder;
 }
+
+export async function getAllUserOrdersRepository(userId: number) {
+  console.log("userid" + userId);
+  const orders = await prisma.order.findMany({
+    where: {
+      userId: userId,
+    },
+    include: {
+      orderItems: {
+        include: {
+          product: true,
+        },
+      },
+    },
+  });
+
+  console.log(orders);
+  return orders;
+}
+
+export async function getSpecificUserOrderRepository(
+  userId: number,
+  orderId: number
+) {
+  const order = await prisma.order.findUnique({
+    where: {
+      id: orderId,
+      userId: userId,
+    },
+    include: {
+      orderItems: {
+        include: {
+          product: true,
+        },
+      },
+    },
+  });
+
+  return order;
+}

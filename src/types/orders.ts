@@ -2,8 +2,12 @@ import { ProductDataType } from "./product";
 
 interface OrderDataType {
   userId: number;
-  products: ProductDataType[];
-  total: number;
+  products: OrderProductDataType[];
 }
 
-export { OrderDataType };
+interface OrderProductDataType {
+  productId: number;
+  quantity: number;
+}
+
+export { OrderDataType, OrderProductDataType };

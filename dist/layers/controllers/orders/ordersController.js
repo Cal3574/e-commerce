@@ -29,4 +29,25 @@ router.post("/new-order", (req, res, next) => __awaiter(void 0, void 0, void 0, 
         next(e);
     }
 }));
+router.get("/all-orders/:userId", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const userId = Number(req.params.userId);
+        // Call the service function to get all orders
+        const orders = yield (0, ordersService_1.getAllUserOrdersService)(userId);
+        console.log(orders);
+        baseController_1.BaseController.apiResultToStatusCode(res, orders);
+        res.json(orders);
+    }
+    catch (e) {
+        next(e);
+    }
+}));
+router.get("/order/:userId/:orderId", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = Number(req.params.userId);
+    const orderId = Number(req.params.orderId);
+    // Call the service function to get the order
+    const order = yield (0, ordersService_1.getSpecificUserOrderService)(userId, orderId);
+    baseController_1.BaseController.apiResultToStatusCode(res, order);
+    res.json(order);
+}));
 module.exports = router;

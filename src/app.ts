@@ -1,9 +1,7 @@
 import express, { Express } from "express";
 import { errorHandler } from "./errors/errorHandler";
 require("dotenv").config();
-
 const cookieParser = require("cookie-parser");
-
 const cors = require("cors");
 const productRoutes = require("./layers/controllers/product/productController"); // Import your route file
 const userRoutes = require("./layers/controllers/user/userController");

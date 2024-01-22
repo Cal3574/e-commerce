@@ -9,6 +9,7 @@ import {
   getAllProductsService,
   updateProductService,
 } from "../../services/product/productService";
+import { AuthenticatedRequest } from "../../../types/requests";
 const router = express.Router();
 
 // Route to add a new product
@@ -18,12 +19,12 @@ router.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       // Extract product data from the request body
+
       const productData: ProductDataType = req.body;
 
-      //@ts-ignore
-      const userId = { userId: Number(req.user.id) };
+      // Extract user ID from the request
 
-      console.log("userId", userId);
+      const userId = { userId: Number(req?.user?.id) };
 
       //convert price & quantity to number
       productData.price = Number(productData.price);

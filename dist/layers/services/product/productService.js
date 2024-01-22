@@ -41,6 +41,8 @@ function deleteProductService(id) {
     });
 }
 exports.deleteProductService = deleteProductService;
+// Type Constraints
+// T extends Partial<ProductDataType>: This generic constraint means that productData can be an object with any subset of the properties defined in ProductDataType. It allows for updating one or more fields of the product without needing to provide the entire product data structure.
 function updateProductService(id, productData) {
     return __awaiter(this, void 0, void 0, function* () {
         const updatedProduct = yield (0, productRepository_1.updateProduct)(id, productData);
