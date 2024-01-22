@@ -43,11 +43,16 @@ router.get("/all-orders/:userId", (req, res, next) => __awaiter(void 0, void 0, 
     }
 }));
 router.get("/order/:userId/:orderId", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = Number(req.params.userId);
-    const orderId = Number(req.params.orderId);
-    // Call the service function to get the order
-    const order = yield (0, ordersService_1.getSpecificUserOrderService)(userId, orderId);
-    baseController_1.BaseController.apiResultToStatusCode(res, order);
-    res.json(order);
+    try {
+        const userId = Number(req.params.userId);
+        const orderId = Number(req.params.orderId);
+        // Call the service function to get the order
+        const order = yield (0, ordersService_1.getSpecificUserOrderService)(userId, orderId);
+        baseController_1.BaseController.apiResultToStatusCode(res, order);
+        res.json(order);
+    }
+    catch (e) {
+        next(e);
+    }
 }));
 module.exports = router;

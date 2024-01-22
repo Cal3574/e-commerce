@@ -18,7 +18,7 @@ const errorHandler = (e, req, res, next) => {
         return res.json(apiResult);
     }
     if (e.code === "P2002") {
-        const apiResult = ApiReturn_1.ApiResult.FailedResult(["Email already exists"]);
+        const apiResult = ApiReturn_1.ApiResult.FailedResult(["Unique constraint failed"]);
         baseController_1.BaseController.apiResultToStatusCode(res, apiResult);
         return res.json(apiResult);
     }

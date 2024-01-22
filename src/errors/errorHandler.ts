@@ -23,7 +23,7 @@ export const errorHandler = (
   }
 
   if (e.code === "P2002") {
-    const apiResult = ApiResult.FailedResult(["Email already exists"]);
+    const apiResult = ApiResult.FailedResult(["Unique constraint failed"]);
     BaseController.apiResultToStatusCode(res, apiResult);
     return res.json(apiResult);
   }
