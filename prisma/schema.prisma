@@ -22,6 +22,9 @@ model Product {
   name     String
   price    Float
   quantity Int
+  description String
+  image    String
+  category category  @default(OTHER)
   orderItems OrderItem[] // Relationship to fetch order items
   cartItems CartItems[] // Relationship to fetch cart items
 }
@@ -70,4 +73,14 @@ enum orderStatus {
   PENDING
   COMPLETED
   CANCELLED
+}
+
+enum category {
+  PHONE
+  HEALTH
+  COMPUTERS
+  WATCHES
+  HEADPHONES
+  BOOKS
+  OTHER
 }

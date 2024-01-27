@@ -16,12 +16,8 @@ exports.getSpecificUserOrderRepository = exports.getAllUserOrdersRepository = ex
 const prisma_1 = __importDefault(require("../../../config/prisma"));
 function createOrderRepository(order) {
     return __awaiter(this, void 0, void 0, function* () {
-        const newOrder = yield prisma_1.default.order
-            .create({
+        const newOrder = yield prisma_1.default.order.create({
             data: Object.assign({}, order),
-        })
-            .catch((e) => {
-            console.log(e);
         });
         return newOrder;
     });
@@ -29,7 +25,6 @@ function createOrderRepository(order) {
 exports.createOrderRepository = createOrderRepository;
 function getAllUserOrdersRepository(userId) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log("userid" + userId);
         const orders = yield prisma_1.default.order.findMany({
             where: {
                 userId: userId,
@@ -42,7 +37,6 @@ function getAllUserOrdersRepository(userId) {
                 },
             },
         });
-        console.log(orders);
         return orders;
     });
 }

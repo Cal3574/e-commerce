@@ -15,13 +15,11 @@ export function validateTokenMiddleware(
       const token = authHeader.split(" ")[1];
 
       jwt.verify(token, process.env.TOKEN_SECRET, (err: any, user: any) => {
-        console.log("user", user);
         if (err) {
           throw new AuthenticationError("User is not authenticated", 401);
         }
         //@ts-ignore
         req.user = { id: user.userId, email: user.email };
-        console.log(user);
       });
 
       next();

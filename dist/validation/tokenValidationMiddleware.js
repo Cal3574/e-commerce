@@ -10,13 +10,11 @@ function validateTokenMiddleware(req, res, next) {
         if (authHeader) {
             const token = authHeader.split(" ")[1];
             jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
-                console.log("user", user);
                 if (err) {
                     throw new errorClasses_1.AuthenticationError("User is not authenticated", 401);
                 }
                 //@ts-ignore
                 req.user = { id: user.userId, email: user.email };
-                console.log(user);
             });
             next();
         }
