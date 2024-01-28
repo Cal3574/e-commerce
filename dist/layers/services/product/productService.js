@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateProductService = exports.deleteProductService = exports.getProductByIdService = exports.getAllProductsService = exports.addProductService = void 0;
+exports.updateProductService = exports.deleteProductService = exports.getProductByIdService = exports.getAllProductsCategoriesService = exports.getAllProductsService = exports.addProductService = void 0;
 const productRepository_1 = require("../../data-access/product/productRepository");
 const ApiReturn_1 = require("../../../util/ApiReturn");
 // Service function to add a product
@@ -27,6 +27,13 @@ function getAllProductsService() {
     });
 }
 exports.getAllProductsService = getAllProductsService;
+function getAllProductsCategoriesService() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const products = yield (0, productRepository_1.allProductsCategories)();
+        return ApiReturn_1.ApiResultWithData.SuccessfulResult(products);
+    });
+}
+exports.getAllProductsCategoriesService = getAllProductsCategoriesService;
 function getProductByIdService(id) {
     return __awaiter(this, void 0, void 0, function* () {
         const product = yield (0, productRepository_1.getProductById)(id);

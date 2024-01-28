@@ -9,6 +9,7 @@ import {
 import {
   addProductService,
   deleteProductService,
+  getAllProductsCategoriesService,
   getAllProductsService,
   updateProductService,
 } from "../../services/product/productService";
@@ -23,18 +24,22 @@ router.post(
       // Extract product data from the request body
 
       const productData: ProductDataType = req.body;
+      console.log(productData);
 
       // Extract user ID from the request
 
       const userId = { userId: Number(req?.user?.id) };
 
+      console.log(userId);
       //convert price & quantity to number
       productData.price = Number(productData.price);
       productData.quantity = Number(productData.quantity);
+      productData.categoryId = Number(productData.categoryId);
 
       // Validate the product data using the schema
       const validatedData = addProductSchema.parse(productData);
 
+      console.log(validatedData);
       // Call the service function to add the product
       const newProduct = await addProductService({
         ...userId,
@@ -55,6 +60,20 @@ router.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const products = await getAllProductsService();
+      BaseController.apiResultToStatusCode(res, products);
+      res.json(products);
+    } catch (e) {
+      next(e);
+    }
+  }
+);
+
+// Route to get all products categories
+router.get(
+  "/all-product-categories",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const products = await getAllProductsCategoriesService();
       BaseController.apiResultToStatusCode(res, products);
       res.json(products);
     } catch (e) {

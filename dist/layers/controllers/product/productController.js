@@ -24,13 +24,17 @@ router.post("/new-product", tokenValidationMiddleware_1.validateTokenMiddleware,
     try {
         // Extract product data from the request body
         const productData = req.body;
+        console.log(productData);
         // Extract user ID from the request
         const userId = { userId: Number((_a = req === null || req === void 0 ? void 0 : req.user) === null || _a === void 0 ? void 0 : _a.id) };
+        console.log(userId);
         //convert price & quantity to number
         productData.price = Number(productData.price);
         productData.quantity = Number(productData.quantity);
+        productData.categoryId = Number(productData.categoryId);
         // Validate the product data using the schema
         const validatedData = addProductSchema_1.addProductSchema.parse(productData);
+        console.log(validatedData);
         // Call the service function to add the product
         const newProduct = yield (0, productService_1.addProductService)(Object.assign(Object.assign({}, userId), validatedData));
         baseController_1.BaseController.apiResultToStatusCode(res, newProduct);
@@ -44,6 +48,17 @@ router.post("/new-product", tokenValidationMiddleware_1.validateTokenMiddleware,
 router.get("/all-products", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const products = yield (0, productService_1.getAllProductsService)();
+        baseController_1.BaseController.apiResultToStatusCode(res, products);
+        res.json(products);
+    }
+    catch (e) {
+        next(e);
+    }
+}));
+// Route to get all products categories
+router.get("/all-product-categories", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const products = yield (0, productService_1.getAllProductsCategoriesService)();
         baseController_1.BaseController.apiResultToStatusCode(res, products);
         res.json(products);
     }

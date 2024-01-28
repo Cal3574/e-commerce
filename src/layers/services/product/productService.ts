@@ -1,6 +1,7 @@
 import {
   addProduct,
   allProducts,
+  allProductsCategories,
   deleteProduct,
   getProductById,
   updateProduct,
@@ -10,7 +11,7 @@ import { ProductDataType } from "../../../types/product";
 
 // Service function to add a product
 export async function addProductService(
-  productData: ProductDataType
+  productData: ProductDataType & { userId: number }
 ): Promise<ApiResultWithData<any>> {
   const newProduct = await addProduct(productData);
   return ApiResultWithData.SuccessfulResult(newProduct);
@@ -18,6 +19,13 @@ export async function addProductService(
 
 export async function getAllProductsService(): Promise<ApiResultWithData<any>> {
   const products = await allProducts();
+  return ApiResultWithData.SuccessfulResult(products);
+}
+
+export async function getAllProductsCategoriesService(): Promise<
+  ApiResultWithData<any>
+> {
+  const products = await allProductsCategories();
   return ApiResultWithData.SuccessfulResult(products);
 }
 

@@ -2,11 +2,17 @@ import prisma from "../../../config/prisma";
 import { ProductDataType } from "../../../types/product";
 
 // Function to add a product
-export async function addProduct(productData: ProductDataType) {
+export async function addProduct(
+  productData: ProductDataType & { userId: number }
+) {
   // Use Prisma's create method to add a new product to the database
-  const newProduct = await prisma.product.create({
-    data: productData,
-  });
+  const newProduct = await prisma.product
+    .create({
+      data: productData,
+    })
+    .catch((e) => {
+      console.log(e);
+    });
 
   return newProduct;
 }
@@ -17,6 +23,11 @@ export async function allProducts() {
   return products;
 }
 
+// Function to get all products categories
+export async function allProductsCategories() {
+  const products = await prisma.category.findMany();
+  return products;
+}
 // Function to get a product by ID
 export async function getProductById(id: number) {
   const product = await prisma.product.findUnique({

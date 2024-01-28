@@ -12,14 +12,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateProduct = exports.deleteProduct = exports.getProductById = exports.allProducts = exports.addProduct = void 0;
+exports.updateProduct = exports.deleteProduct = exports.getProductById = exports.allProductsCategories = exports.allProducts = exports.addProduct = void 0;
 const prisma_1 = __importDefault(require("../../../config/prisma"));
 // Function to add a product
 function addProduct(productData) {
     return __awaiter(this, void 0, void 0, function* () {
         // Use Prisma's create method to add a new product to the database
-        const newProduct = yield prisma_1.default.product.create({
+        const newProduct = yield prisma_1.default.product
+            .create({
             data: productData,
+        })
+            .catch((e) => {
+            console.log(e);
         });
         return newProduct;
     });
@@ -33,6 +37,14 @@ function allProducts() {
     });
 }
 exports.allProducts = allProducts;
+// Function to get all products categories
+function allProductsCategories() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const products = yield prisma_1.default.category.findMany();
+        return products;
+    });
+}
+exports.allProductsCategories = allProductsCategories;
 // Function to get a product by ID
 function getProductById(id) {
     return __awaiter(this, void 0, void 0, function* () {

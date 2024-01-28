@@ -16,12 +16,15 @@ export function validateTokenMiddleware(
 
       jwt.verify(token, process.env.TOKEN_SECRET, (err: any, user: any) => {
         if (err) {
+          console.log("fail2");
+
           throw new AuthenticationError("User is not authenticated", 401);
         }
         //@ts-ignore
         req.user = { id: user.userId, email: user.email };
       });
 
+      console.log("next");
       next();
     } else {
       throw new AuthenticationError("User is not authenticated", 401);
